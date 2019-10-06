@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
-project(cpp_2019_09_26 VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
+project(helloworld VERSION 0.0.$ENV{TRAVIS_BUILD_NUMBER})
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -7,13 +7,13 @@ find_package(Boost COMPONENTS unit_test_framework REQUIRED)
 
 configure_file(version.h.in ${PROJECT_SOURCE_DIR}/version.h)
 
-add_executable(helloworld_cli)
-target_sources(helloworld_cli PRIVATE
+add_executable(helloworld)
+target_sources(helloworld PRIVATE
         main.cpp
         )
 
-add_library(helloworld lib.h lib.cpp)
-target_sources(helloworld PRIVATE
+add_library(lib lib.h lib.cpp)
+target_sources(lib PRIVATE
         lib.cpp
         )
 
@@ -22,7 +22,7 @@ target_sources(test_version PRIVATE
         test_version.cpp
         )
 
-set_target_properties(helloworld_cli helloworld test_version PROPERTIES
+set_target_properties(helloworld lib test_version PROPERTIES
         CXX_STANDARD_REQUIRED ON
         COMPILE_OPTIONS "-Wpedantic;-Wall;-Wextra"
         )
@@ -32,18 +32,18 @@ set_target_properties(test_version PROPERTIES
         INCLUDE_DIRECTORIES ${Boost_INCLUDE_DIR}
         )
 
-target_link_libraries(helloworld_cli
-        helloworld
+target_link_libraries(helloworld
+        lib
         )
 
 message("BOOST:" ${Boost_LIBRARIES})
 
 target_link_libraries(test_version
         ${Boost_LIBRARIES}
-        helloworld
+        lib
         )
 
-install(TARGETS helloworld_cli RUNTIME DESTINATION bin)
+install(TARGETS helloworld RUNTIME DESTINATION bin)
 
 set(CPACK_GENERATOR DEB)
 
